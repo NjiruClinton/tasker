@@ -1,0 +1,16 @@
+<div class="app-shell">
+  <header class="top-nav">
+    <.link navigate={~p"/boards"} class="brand">Tasker</.link>
+    <nav class="flex items-center gap-3">
+      <.link navigate={~p"/boards"} class="text-sm font-bold text-[var(--muted)] hover:text-[var(--ink)]">
+        Boards
+      </.link>
+      <.link patch={~p"/boards/new"} class="button">New board</.link>
+    </nav>
+  </header>
+
+  <main class="page">
+    <.flash_group flash={@flash} />
+    <%= @inner_content %>
+  </main>
+</div>

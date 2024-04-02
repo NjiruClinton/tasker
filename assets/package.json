@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "deploy": "cd .. && mix assets.deploy",
+    "watch": "cd .. && mix assets.build --watch"
+  },
+  "dependencies": {}
+}

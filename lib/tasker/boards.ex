@@ -138,6 +138,8 @@ defmodule Tasker.Boards do
     Card.changeset(card, attrs)
   end
 
+  def get_card!(id), do: Repo.get!(Card, id)
+
   def create_card(%Board{} = board, %KanbanList{} = list, attrs, %User{} = actor) do
     attrs =
       attrs

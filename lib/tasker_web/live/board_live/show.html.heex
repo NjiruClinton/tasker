@@ -1,0 +1,100 @@
+<section class="stack">
+  <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <div>
+      <.link navigate={~p"/boards"} class="muted text-sm font-bold">Boards</.link>
+      <h1 class="mt-2 text-3xl font-black"><%= @board.name %></h1>
+      <p :if={@board.description} class="muted mt-2 max-w-3xl"><%= @board.description %></p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <span
+        :for={collaborator <- @collaborators}
+        class="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-sm font-bold"
+      >
+        <%= collaborator.name %>
+      </span>
+    </div>
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-[1fr_18rem]">
+    <div id="kanban-board" phx-hook="KanbanDrop" class="kanban-board">
+      <section :for={list <- @board.lists} class="kanban-list" data-list-id={list.id}>
+        <header class="mb-3 flex items-center justify-between gap-3">
+          <h2 class="text-base font-black"><%= list.name %></h2>
+          <span class="rounded-full bg-white px-2 py-1 text-xs font-black text-[var(--muted)]">
+            <%= length(list.cards) %>
+          </span>
+        </header>
+
+        <div class="min-h-[16rem] flex-1">
+          <article :for={card <- list.cards} class="kanban-card" data-card-id={card.id}>
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-black leading-5"><%= card.title %></h3>
+              <span class={["priority", card.priority]}><%= card.priority %></span>
+            </div>
+
+            <p :if={card.description} class="muted text-sm"><%= card.description %></p>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                :for={label <- card.labels}
+                class="rounded-full border border-[var(--line)] px-2 py-1 text-xs font-bold text-[var(--muted)]"
+              >
+                <%= label %>
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 text-xs text-[var(--muted)]">
+              <span><%= card.status %></span>
+              <button
+                :if={card.status != "done"}
+                type="button"
+                phx-click="mark-done"
+                phx-value-id={card.id}
+                class="font-black text-[var(--moss)]"
+              >
+                Done
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <.form id={"new-card-#{list.id}"} for={@card_form} phx-submit="create-card" class="stack mt-2">
+          <input type="hidden" name="list_id" value={list.id} />
+          <input class="input" name="card[title]" placeholder="Add a card" />
+          <div class="grid grid-cols-[1fr_auto] gap-2">
+            <select class="input" name="card[priority]">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+            <button class="button" type="submit">Add</button>
+          </div>
+          <input class="input" name="card[labels]" placeholder="api, ux" />
+        </.form>
+      </section>
+    </div>
+
+    <aside class="stack">
+      <section class="card">
+        <h2 class="text-base font-black">New list</h2>
+        <.form for={@list_form} phx-submit="create-list" class="stack mt-3">
+          <input class="input" name="list[name]" placeholder="Blocked" />
+          <button class="button" type="submit">Add list</button>
+        </.form>
+      </section>
+
+      <section class="card">
+        <h2 class="text-base font-black">Activity</h2>
+        <div class="mt-3 grid gap-3">
+          <div :for={activity <- @board.activities} class="border-t border-[var(--line)] pt-3">
+            <p class="text-sm font-bold"><%= String.replace(activity.action, ".", " ") %></p>
+            <p class="muted text-xs">
+              <%= activity.actor.name %>
+            </p>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</section>

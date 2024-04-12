@@ -15,15 +15,15 @@ const KanbanDrop = {
   bindDragEvents() {
     this.el.querySelectorAll("[data-card-id]").forEach((card) => {
       card.draggable = true
-      card.addEventListener("dragstart", (event) => {
+      card.ondragstart = (event) => {
         event.dataTransfer.effectAllowed = "move"
         event.dataTransfer.setData("text/plain", card.dataset.cardId)
-      })
+      }
     })
 
     this.el.querySelectorAll("[data-list-id]").forEach((list) => {
-      list.addEventListener("dragover", (event) => event.preventDefault())
-      list.addEventListener("drop", (event) => {
+      list.ondragover = (event) => event.preventDefault()
+      list.ondrop = (event) => {
         event.preventDefault()
         const cardId = event.dataTransfer.getData("text/plain")
         const cards = Array.from(list.querySelectorAll("[data-card-id]"))
@@ -34,7 +34,7 @@ const KanbanDrop = {
           list_id: list.dataset.listId,
           position: position < 0 ? cards.length : position
         })
-      })
+      }
     })
   }
 }

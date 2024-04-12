@@ -28,7 +28,7 @@ defmodule Tasker.Boards.Card do
 
   def changeset(card, attrs) do
     card
-    |> cast(attrs, [
+    |> cast(normalize_labels(attrs), [
       :title,
       :description,
       :priority,
@@ -47,6 +47,23 @@ defmodule Tasker.Boards.Card do
     |> validate_number(:position, greater_than_or_equal_to: 0)
     |> foreign_key_constraint(:assignee_id)
     |> foreign_key_constraint(:board_id)
-    |> foreign_key_constraint(:list_id)
+      |> foreign_key_constraint(:list_id)
+  end
+
+  defp normalize_labels(%{"labels" => labels} = attrs) when is_binary(labels) do
+    Map.put(attrs, "labels", split_labels(labels))
+  end
+
+  defp normalize_labels(%{labels: labels} = attrs) when is_binary(labels) do
+    Map.put(attrs, :labels, split_labels(labels))
+  end
+
+  defp normalize_labels(attrs), do: attrs
+
+  defp split_labels(labels) do
+    labels
+    |> String.split(",", trim: true)
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
   end
 end

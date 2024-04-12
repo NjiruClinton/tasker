@@ -1,0 +1,54 @@
+<section class="stack">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-sm font-bold uppercase text-[var(--moss)]">Workspace</p>
+      <h1 class="text-3xl font-black">Boards</h1>
+    </div>
+
+    <.link_button patch={~p"/boards/new"}>Create board</.link_button>
+  </div>
+
+  <div :if={@boards == []} class="card">
+    <h2 class="text-xl font-black">No boards yet</h2>
+    <p class="muted mt-2">Create the first planning space for your team.</p>
+  </div>
+
+  <div class="board-grid">
+    <.link
+      :for={board <- @boards}
+      navigate={~p"/boards/#{board.id}"}
+      class="card block text-inherit no-underline transition hover:-translate-y-0.5 hover:border-[var(--moss)]"
+    >
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-black"><%= board.name %></h2>
+          <p class="muted mt-2 line-clamp-2"><%= board.description || "Active project board" %></p>
+        </div>
+        <span class="rounded-full bg-[var(--mint)] px-2 py-1 text-xs font-black text-[var(--moss)]">
+          <%= length(board.memberships) %>
+        </span>
+      </div>
+      <p class="muted mt-6 text-sm">
+        Owner: <%= board.owner.name %>
+      </p>
+    </.link>
+  </div>
+</section>
+
+<div :if={@live_action == :new} class="fixed inset-0 z-30 grid place-items-center bg-black/30 p-4">
+  <section class="card w-full max-w-lg">
+    <div class="mb-5 flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-black">Create board</h2>
+        <p class="muted mt-1">Name the workspace and add a short purpose.</p>
+      </div>
+      <.link patch={~p"/boards"} class="button secondary">Close</.link>
+    </div>
+
+    <.simple_form for={@form} phx-submit="save" phx-change="validate">
+      <.input field={@form[:name]} label="Name" placeholder="Product launch" />
+      <.input field={@form[:description]} label="Description" placeholder="Roadmap, launch, and follow-up tasks" />
+      <button class="button" type="submit">Create</button>
+    </.simple_form>
+  </section>
+</div>

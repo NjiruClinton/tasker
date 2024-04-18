@@ -5,7 +5,7 @@ defmodule Tasker.Repo.Migrations.CreateActivities do
     create table(:activities) do
       add :action, :string, null: false
       add :metadata, :map, null: false, default: %{}
-      add :actor_id, references(:users, on_delete: :nilify_all), null: false
+      add :actor_id, references(:users, on_delete: :nilify_all)
       add :board_id, references(:boards, on_delete: :delete_all), null: false
       add :card_id, references(:cards, on_delete: :nilify_all)
 

@@ -1,5 +1,7 @@
 import Config
 
+config :tasker, dev_routes: true
+
 config :tasker, Tasker.Repo,
   username: "postgres",
   password: "postgres",

@@ -250,7 +250,7 @@ defmodule Tasker.Boards do
 
     activities =
       board.activities
-      |> Enum.sort_by(& &1.inserted_at, {:desc, DateTime})
+      |> Enum.sort_by(& &1.id, :desc)
       |> Enum.take(25)
 
     %{board | lists: lists, activities: activities}
